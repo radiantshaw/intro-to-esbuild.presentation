@@ -272,14 +272,32 @@ one();
 
 ---
 
-# Dev Server
+# Inbuilt Development Server
+
+<v-click>
 
 ```js {1,7|1-3|3-7|all}
 require('esbuild').serve({
   servedir: 'public'
 }, {
-  entryPoints: ['app.js'],
+  entryPoints: ['src/app.jsx'],
   bundle: true,
-  outdir: 'public/assets'
+  outdir: 'public/dist'
 });
 ```
+
+</v-click>
+
+---
+
+# Any Questions?
+
+<style>
+
+.slidev-layout h1 {
+  font-size: 4.75rem;
+  margin-top: 25%;
+  text-align: center;
+}
+
+</style>
