@@ -6,44 +6,58 @@ theme: ../../Kiprosh/slidev-theme-kiprosh
 
 ---
 
+# Why ESBuild?
+
+<v-click>
+
+![](/images/speed.svg)
+
+</v-click>
+
+<style>
+
+img {
+  margin-top: 12%;
+}
+
+</style>
+
+---
+
 # Installation
+
+<v-clicks>
 
 ```bash
 $ npm install esbuild
 ```
 
-<v-click>
-
 ... installs `esbuild` inside the local `node_modules/` folder.
 
-</v-click>
-
-<v-click>
-
 And, it also installs an `esbuild` executable inside the `node_modules/.bin/` folder
-
-</v-click>
-
-<v-click>
 
 ```bash
 $ ./node_modules/.bin/esbuild --version
 0.14.10
 ```
 
-</v-click>
+</v-clicks>
 
 ---
 
 # Bundling
 
+<v-click>
+
 ```bash
 $ npm install react react-dom
 ```
 
+</v-click>
+
 <v-click>
 
-Then we create an `app.jsx` file:
+Then we create an `src/app.jsx` file:
 
 ```jsx
 import React from 'react';
@@ -63,285 +77,209 @@ ReactDOM.render(<App />, document.getElementById('root'));
 ... and then we build it:
 
 ```bash
-$ ./node_modules/.bin/esbuild app.jsx --bundle --outfile=out.js
+$ ./node_modules/.bin/esbuild src/app.jsx --bundle --outfile=dist/out.js
 ```
 
 </v-click>
 
 ---
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
----
 
-# Code
+# Using NPM Scripts
 
-Use code snippets and get the highlighting directly![^1]
+<v-click>
 
-```ts {all|2|1-6|9|all}
-interface User {
-  id: number
-  firstName: string
-  lastName: string
-  role: string
-}
+Move the command inside `package.json`:
 
-function updateUser(id: number, update: User) {
-  const user = getUser(id)
-  const newUser = {...user, ...update}  
-  saveUser(id, newUser)
+```json
+{
+  "scripts": {
+    "build": "esbuild src/app.jsx --bundle --outfile=dist/out.jsx"
+  }
 }
 ```
 
-<arrow v-click="3" x1="400" y1="420" x2="230" y2="330" color="#564" width="3" arrowSize="1" />
+</v-click>
 
-[^1]: [Learn More](https://sli.dev/guide/syntax.html#line-highlighting)
+<v-click>
+
+... which can then be used as:
+
+```bash
+$ npm run build
+```
+
+</v-click>
+
+---
+
+# Using A Build Script
+
+<v-click>
+
+Create a `scripts/build.js` script:
+
+```js {1,5|2|3|4|all}
+require('esbuild').build({
+  entryPoints: ['src/app.jsx'],
+  bundle: true,
+  outfile: 'dist/out.js'
+}).catch(() => process.exit(1));
+```
+
+</v-click>
+
+<v-click>
+
+Update the NPM script:
+
+```json
+{
+  "scripts": {
+    "build": "node scripts/build.js"
+  }
+}
+```
+
+</v-click>
+
+---
+
+# Ignore External Dependencies
+
+<v-click>
+
+```js {4}
+require('esbuild').build({
+  entryPoints: ['src/app.jsx'],
+  bundle: true,
+  external: ['react', 'react-dom'],
+  outfile: 'dist/out.js'
+}).catch(() => process.exit(1));
+```
+
+</v-click>
+
+---
+
+# Features
 
 <style>
-.footnotes-sep {
-  @apply mt-20 opacity-10;
+
+.slidev-layout h1 {
+  font-size: 4.75rem;
+  margin-top: 25%;
+  text-align: center;
 }
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
+
 </style>
 
 ---
 
-# Components
+# TypeScript and JSX Support
 
-<div grid="~ cols-2 gap-4">
-<div>
+<v-click>
 
-You can use Vue components directly inside your slides.
-
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
-
-```html
-<Counter :count="10" />
+```js
+// TODO: Nothing!
 ```
 
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
+... because the JSX loader is enabled for `.jsx`, and `.tsx` files.
 
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
+</v-click>
 
-</div>
-<div>
+<v-click>
 
-```html
-<Tweet id="1390115482657726468" />
+But, for supporting JSX inside `.js` and `.ts` files:
+
+```js {4-7}
+require('esbuild').build({
+  entryPoints: ['src/app.jsx'],
+  bundle: true,
+  loader: {
+    '.js': 'jsx',
+    '.ts': 'tsx'
+  },
+  outfile: 'dist/out.js'
+}).catch(() => process.exit(1));
 ```
 
-<Tweet id="1390115482657726468" scale="0.65" />
+</v-click>
 
-</div>
-</div>
+<v-clicks>
 
+- **No Type Checking** is done so it has to be done manually
+
+</v-clicks>
 
 ---
-class: px-20
----
 
-# Themes
+# Deno Support
 
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
+<v-click>
 
-<div grid="~ cols-2 gap-2" m="-t-2">
+```js {1|3-7|9|all}
+import * as esbuild from 'https://deno.land/x/esbuild@v0.14.12/mod.js';
 
-```yaml
----
-theme: default
----
+await esbuild.build({
+  entryPoints: ['src/app.jsx'],
+  bundle: true,
+  outfile: 'dist/out.js'
+});
+
+esbuild.stop();
 ```
 
-```yaml
+</v-click>
+
 ---
-theme: seriph
----
+
+# Tree Shaking
+
+<v-click>
+
+Let's say we have a file `src/lib.js`:
+
+```js
+export function one() { console.log('one') }
+export function two() { console.log('two') }
 ```
 
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true">
+</v-click>
 
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true">
+<v-click>
 
-</div>
+... and we `import` it inside our `src/app.js`:
 
-Read more about [How to use a theme](https://sli.dev/themes/use.html) and
-check out the [Awesome Themes Gallery](https://sli.dev/themes/gallery.html).
+```js
+import * as lib from './lib.js';
 
----
-preload: false
----
-
-# Animations
-
-Animations are powered by [@vueuse/motion](https://motion.vueuse.org/).
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }">
-  Slidev
-</div>
+lib.one();
 ```
 
-<div class="w-60 relative mt-6">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-square.png"
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-circle.png"
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-triangle.png"
-    />
-  </div>
+</v-click>
 
-  <div
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
+<v-click>
 
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
-}
-</script>
+It gets bundled as:
 
-<div
-  v-motion
-  :initial="{ x:35, y: 40, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
+```js
+function one() { console.log("one") }
 
-[Learn More](https://sli.dev/guide/animations.html#motion)
-
-</div>
-
----
-
-# LaTeX
-
-LaTeX is supported out-of-box powered by [KaTeX](https://katex.org/).
-
-<br>
-
-Inline $\sqrt{3x-1}+(1+x)^2$
-
-Block
-$$
-\begin{array}{c}
-
-\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
-= \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
-
-\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
-
-\nabla \cdot \vec{\mathbf{B}} & = 0
-
-\end{array}
-$$
-
-<br>
-
-[Learn more](https://sli.dev/guide/syntax#latex)
-
----
-
-# Diagrams
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-3 gap-10 pt-4 -mb-6">
-
-```mermaid {scale: 0.5}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
+one();
 ```
 
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
-```plantuml {scale: 0.7}
-@startuml
-
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
-
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
-```
-
-</div>
-
-[Learn More](https://sli.dev/guide/syntax.html#diagrams)
-
+</v-click>
 
 ---
-layout: center
-class: text-center
----
 
-# Learn More
+# Dev Server
 
-[Documentations](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/showcases.html)
+```js {1,7|1-3|3-7|all}
+require('esbuild').serve({
+  servedir: 'public'
+}, {
+  entryPoints: ['app.js'],
+  bundle: true,
+  outdir: 'public/assets'
+});
+```
