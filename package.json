@@ -8,7 +8,8 @@
   "dependencies": {
     "@slidev/cli": "^0.27.20",
     "@slidev/theme-default": "*",
-    "@slidev/theme-seriph": "*"
+    "@slidev/theme-seriph": "*",
+    "slidev-theme-kiprosh": "ssh://git@github.com:radiantshaw/slidev-theme-kiprosh.git#feature/default"
   },
   "name": "intro-to-esbuild"
 }
