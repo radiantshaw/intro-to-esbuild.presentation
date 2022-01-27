@@ -210,7 +210,7 @@
     prism-theme-vars "^0.2.2"
     theme-vitesse "^0.1.12"
 
-"@slidev/types@0.27.20":
+"@slidev/types@0.27.20", "@slidev/types@^0.27.18":
   version "0.27.20"
   resolved "https://registry.yarnpkg.com/@slidev/types/-/types-0.27.20.tgz#2c759e31a91969543ea68f0ecb7f9e5f6ec714db"
   integrity sha512-w9Dh123hBaAde7cWbhrxbhp/h7Kt0uBYK6YhxAD5Zzj4JlKA8oyv3dvSw89+MD1UO1OJxPM040UZD//d5YqxZA==
@@ -2062,6 +2062,15 @@ sisteransi@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
+
+"slidev-theme-kiprosh@ssh://git@github.com:radiantshaw/slidev-theme-kiprosh.git#feature/default":
+  version "0.0.0"
+  resolved "ssh://git@github.com:radiantshaw/slidev-theme-kiprosh.git#75498185245bef7b755bc3521b55d2208a4f73d6"
+  dependencies:
+    "@slidev/types" "^0.27.18"
+    codemirror-theme-vars "^0.1.1"
+    prism-theme-vars "^0.2.2"
+    theme-vitesse "^0.1.12"
 
 source-map-js@^1.0.1:
   version "1.0.1"

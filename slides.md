@@ -1,5 +1,5 @@
 ---
-theme: ../../Kiprosh/slidev-theme-kiprosh
+theme: slidev-theme-kiprosh
 ---
 
 # ESBuild: An Introduction
